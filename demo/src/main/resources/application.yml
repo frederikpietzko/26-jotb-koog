@@ -1,9 +1,6 @@
 spring:
   application:
     name: koog-travel-policy-demo
-  # the proxy credentials live in .env (YAML-compatible "KEY: value" lines)
-  config:
-    import: optional:file:.env[.yaml]
   jpa:
     open-in-view: false
     hibernate:

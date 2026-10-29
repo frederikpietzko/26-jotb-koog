@@ -22,7 +22,7 @@ Spring Boot 4.1.1, Spring AI 2.1.0-M1 (Responses API), Koog 1.3.0
 
 ## Run
 
-Credentials (`OPENAI_BASE_URL`, `OPENAI_API_KEY`) are read from `.env`.
+Set the OpenAI API key and base URL in `src/main/resources/application.yml` (`spring.ai.openai.api-key` and `spring.ai.openai.base-url`; by default they read `OPENAI_API_KEY` and `OPENAI_BASE_URL`).
 
 ```bash
 ./gradlew bootRun
