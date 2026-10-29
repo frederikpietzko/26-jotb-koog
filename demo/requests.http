@@ -1,0 +1,47 @@
+### Policies
+GET localhost:8080/api/policies
+
+###
+POST localhost:8080/api/policies
+Content-Type: application/json
+
+{ "title": "Car rental", "text": "Rental cars are limited to compact class unless three or more employees travel together." }
+
+### Trips
+GET localhost:8080/api/trips
+
+###
+POST localhost:8080/api/trips
+Content-Type: application/json
+
+{ "traveler": "Ivana Babic", "purpose": "Team offsite", "origin": "Split", "destination": "Zurich",
+  "startDate": "2026-12-14", "endDate": "2026-12-16" }
+
+###
+POST localhost:8080/api/trips/3/flights
+Content-Type: application/json
+
+{ "airline": "Croatia Airlines", "flightNumber": "OU470", "fromAirport": "SPU", "toAirport": "ZRH",
+  "departure": "2026-12-14T07:10:00", "arrival": "2026-12-14T09:00:00", "cabinClass": "ECONOMY", "price": 210.00 }
+
+###
+POST localhost:8080/api/trips/3/hotels
+Content-Type: application/json
+
+{ "hotelName": "Hotel Schweizerhof", "city": "Zurich", "checkIn": "2026-12-14", "checkOut": "2026-12-16", "nightlyRate": 240.00 }
+
+###
+POST localhost:8080/api/trips/3/trains
+Content-Type: application/json
+
+{ "operator": "SBB", "fromStation": "Zurich HB", "toStation": "Zurich Airport", "departure": "2026-12-16T16:00:00",
+  "arrival": "2026-12-16T16:12:00", "travelClass": "FIRST", "price": 12.00 }
+
+### Submit for review
+POST localhost:8080/api/trips/2/submit
+
+### Review results
+GET localhost:8080/api/trips/2/reviews
+
+###
+GET localhost:8080/api/trips/2

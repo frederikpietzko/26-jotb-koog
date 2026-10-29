@@ -1,0 +1,23 @@
+spring:
+  application:
+    name: koog-travel-policy-demo
+  # the proxy credentials live in .env (YAML-compatible "KEY: value" lines)
+  config:
+    import: optional:file:.env[.yaml]
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: create-drop
+  ai:
+    openai:
+      api-key: ${OPENAI_API_KEY}
+      base-url: ${OPENAI_BASE_URL}
+      chat:
+        # Spring AI 2.1: use OpenAI's Responses API instead of Chat Completions
+        api: responses
+      responses:
+        model: gpt-5-mini
+        reasoning-effort: low
+koog:
+  langfuse:
+    enabled: true

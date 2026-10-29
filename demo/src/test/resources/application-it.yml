@@ -1,0 +1,6 @@
+# Integration tests never talk to a real LLM: the ScriptedChatModel replaces it (see IntegrationTest).
+spring:
+  ai:
+    openai:
+      api-key: test
+      base-url: http://localhost:1

@@ -1,0 +1,1494 @@
+:root {
+    --fundamentals-purple: #7954f6;
+    --fundamentals-pink: #eb55e6;
+    --fundamentals-ink: #1f2023;
+    --drawn-annotation-color: var(--fundamentals-purple, #7954f6);
+    --code-window-columns: 80;
+}
+
+html.dark {
+    --fundamentals-ink: #f4f2f7;
+}
+
+.presentation-cover {
+    --cover-text-width: 62%;
+}
+
+.presentation-cover h1 {
+    max-width: none; white-space: nowrap; font-size: 5.2rem !important;
+    /* The theme's `leading-20` (5rem) is shorter than this headline's font
+       size, so descenders such as the "g" fall outside the line box and get
+       clipped. Give the line enough room and a little breathing space below. */
+    line-height: 1.2; padding-bottom: 0.12em;
+    background: linear-gradient(120deg, var(--fundamentals-purple), var(--fundamentals-pink));
+    background-clip: text; -webkit-background-clip: text; color: transparent;
+}
+
+.presentation-cover h2 { font-size: 2rem; }
+.kodee-character { z-index: 0; }
+
+/* Section intro slides (`layout: intro` + `class: section-intro`).
+   Reusable opener for every section: bold gradient headline, muted subtitle
+   and a short accent rule. Sized so a typical section title stays on one
+   line; longer titles wrap into balanced lines instead of overflowing.
+   Override per slide with `--section-intro-title-size` if needed. */
+.section-intro {
+    /* No featured mascot on these slides, so the text column may be wide. */
+    --cover-text-width: 85%;
+    --section-intro-title-size: 3.4rem;
+}
+
+.section-intro h1 {
+    font-size: var(--section-intro-title-size) !important;
+    line-height: 1.2;
+    padding-bottom: 0.12em;
+    font-weight: 800;
+    max-width: none;
+    text-wrap: balance;
+    background: linear-gradient(120deg, var(--fundamentals-purple), var(--fundamentals-pink));
+    background-clip: text; -webkit-background-clip: text; color: transparent;
+}
+
+.section-intro h1::after {
+    content: '';
+    display: block;
+    width: 6rem;
+    height: 0.35rem;
+    margin-top: 1.25rem;
+    border-radius: 999px;
+    background: linear-gradient(120deg, var(--fundamentals-purple), var(--fundamentals-pink));
+}
+
+.section-intro h2 {
+    margin-top: 1.5rem;
+    font-size: 1.6rem;
+    font-weight: 700;
+    opacity: 0.75;
+}
+
+/* Code slides (`class: code-slide`): a headline sitting directly on top of a
+   code window looks cramped, so give the title some breathing room before the
+   first code block. */
+.code-slide h1 {
+    margin-bottom: 2.25rem;
+}
+
+.code-slide h1 + pre,
+.code-slide h1 + .slidev-code-wrapper,
+.code-slide h1 + .code-window {
+    margin-top: 0;
+}
+
+/* Two code windows stacked on one code slide (e.g. the snippet plus its query
+   log) need a visible gap so they don't read as a single block.
+   `!important` is required: Slidev itself sets
+   `.slidev-code-wrapper { margin: var(--slidev-code-margin) !important }`,
+   which silently wins over any plain rule here. Padding would work too, but
+   the language badge is absolutely positioned against the wrapper and would
+   then float above the editor. */
+.code-slide .slidev-code-wrapper ~ .slidev-code-wrapper {
+    margin-top: 3rem !important;
+}
+
+/* Click-revealed query log: same gap as a plain second code window (the
+   wrapper is nested in this div, so the sibling rule above no longer
+   applies), plus a short fade-and-rise when the click reveals it. */
+.code-slide .reveal-log {
+    margin-top: 3rem;
+}
+
+.reveal-log {
+    transition: opacity 350ms ease, transform 350ms ease;
+}
+
+.reveal-log.slidev-vclick-hidden {
+    opacity: 0;
+    transform: translateY(1rem);
+}
+
+/* Diagram slides (`class: bridge-slide`): the headline is a full sentence and
+   the diagram below it needs the vertical space, so the title is a touch
+   smaller than a code slide's and sits tighter above its content. */
+.bridge-slide h1 {
+    font-size: 2.1rem !important;
+    line-height: 1.2;
+    max-width: none;
+    text-wrap: balance;
+    margin-bottom: 0.25rem;
+}
+
+/* Pipeline slides (`class: pipeline-slide`): same treatment as the bridge
+   diagram - a full-sentence headline over a <MigrationPipeline>, so the title
+   is smaller than a section opener and sits tight above the diagram. */
+.pipeline-slide h1 {
+    font-size: 2.1rem !important;
+    line-height: 1.2;
+    max-width: none;
+    text-wrap: balance;
+    margin-bottom: 0.25rem;
+}
+
+/* Module slides (`class: module-slide`): a full-sentence headline over a
+   <ModuleList>. Same treatment as the diagram slide - the title is a
+   statement, so it is smaller than a section opener and sits tight above the
+   list. The list's own size is a variable so a longer list can shrink
+   per slide without touching the component. */
+.module-slide h1 {
+    font-size: 2.1rem !important;
+    line-height: 1.2;
+    max-width: none;
+    text-wrap: balance;
+    margin-bottom: 0.25rem;
+}
+
+.module-slide {
+    --module-list-font-size: 1.8rem;
+}
+
+/* Wishlist slide (`class: wishlist-slide`): the closing "what I want instead"
+   slide is a 2x2 grid of short statements, not a bullet list - each card
+   carries a gradient numeral and fades in on its own click. Like every other
+   content slide the title stays at the top; the cards are sized to fill the
+   space instead of centering the block. */
+.wishlist-slide h1 {
+    font-size: 2.1rem !important;
+    line-height: 1.2;
+    max-width: none;
+    text-wrap: balance;
+    margin-bottom: 0.25rem;
+}
+
+.wishlist {
+    counter-reset: wish;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.6rem;
+    margin-top: 2.6rem;
+}
+
+.wishlist .wish {
+    counter-increment: wish;
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+    min-height: 7rem;
+    padding: 1.5rem 1.7rem;
+    border-radius: 0.9rem;
+    border: 1px solid color-mix(in srgb, var(--fundamentals-purple) 25%, transparent);
+    background: color-mix(in srgb, var(--fundamentals-purple) 7%, transparent);
+    font-size: 1.55rem;
+    font-weight: 700;
+    line-height: 1.3;
+    text-wrap: balance;
+    /* Slidev only animates the opacity of a reveal, so the rise has to be
+       declared here. */
+    transition: opacity 350ms ease, transform 350ms ease;
+}
+
+.wishlist .wish.slidev-vclick-hidden {
+    opacity: 0;
+    transform: translateY(0.75rem);
+}
+
+.wishlist .wish::before {
+    content: counter(wish, decimal-leading-zero);
+    flex: none;
+    font-size: 2rem;
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+    background: linear-gradient(120deg, var(--fundamentals-purple), var(--fundamentals-pink));
+    background-clip: text; -webkit-background-clip: text; color: transparent;
+}
+
+/* Verdict slide (`class: verdict-slide`): the DSL-vs-DAO closer. Two cards
+   side by side instead of a bullet list, plus a full-width footer stating
+   that the two are not exclusive. Each part fades in on its own click. */
+.verdict-slide h1 {
+    font-size: 2.1rem !important;
+    line-height: 1.2;
+    max-width: none;
+    text-wrap: balance;
+    margin-bottom: 0.25rem;
+}
+
+.verdict {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2.5rem;
+    margin-top: 4rem;
+}
+
+.verdict-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 1.2rem;
+    min-height: 19rem;
+    padding: 2.2rem 2.4rem;
+    border-radius: 0.9rem;
+    border: 1px solid color-mix(in srgb, var(--fundamentals-purple) 25%, transparent);
+    background: color-mix(in srgb, var(--fundamentals-purple) 7%, transparent);
+}
+
+.verdict-card h3 {
+    margin: 0;
+    font-size: 2.6rem;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    background: linear-gradient(120deg, var(--fundamentals-purple), var(--fundamentals-pink));
+    background-clip: text; -webkit-background-clip: text; color: transparent;
+}
+
+.verdict-card p {
+    margin: 0;
+    font-size: 1.8rem;
+    font-weight: 700;
+    line-height: 1.3;
+    text-wrap: balance;
+}
+
+.verdict-footer {
+    margin-top: 3.5rem;
+    padding: 1.6rem 1.8rem;
+    border-radius: 0.9rem;
+    border: 1px dashed color-mix(in srgb, var(--fundamentals-purple) 35%, transparent);
+    font-size: 1.6rem;
+    font-weight: 700;
+    text-align: center;
+    text-wrap: balance;
+}
+
+/* Slidev only animates the opacity of a reveal, so the rise has to be
+   declared here. */
+.verdict-card,
+.verdict-footer {
+    transition: opacity 350ms ease, transform 350ms ease;
+}
+
+.verdict-card.slidev-vclick-hidden,
+.verdict-footer.slidev-vclick-hidden {
+    opacity: 0;
+    transform: translateY(0.75rem);
+}
+
+/* Closing Q&A slide (`class: section-intro qa-slide`): the headline keeps the
+   section-opener look on the left, the two QR codes (slides, feedback) sit
+   side by side in the middle of the slide, clear of the headline and of the
+   corner Kodee.
+   Both codes are black on white, so each gets its own white plate to stay
+   scannable in dark mode. The assets are cropped to a ~2 module quiet zone
+   (SVG via its viewBox, the feedback PNG as a `-cropped` copy without the
+   baked-in title) so both codes render at the same visual size; the plate's
+   padding restores the rest of the quiet zone. */
+.qa-slide {
+    /* Only "Q&A" lives in the text column. */
+    --cover-text-width: 40%;
+    --qa-qr-size: 17rem;
+}
+
+.qa-slide .qa-qr-row {
+    position: absolute;
+    /* Centered horizontally and vertically on the slide. */
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    gap: 3.5rem;
+}
+
+.qa-slide .qa-qr-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.1rem;
+}
+
+.qa-slide .qa-qr {
+    display: block;
+    width: var(--qa-qr-size);
+    height: var(--qa-qr-size);
+    padding: 1rem;
+    border-radius: 1rem;
+    background: #fff;
+    box-shadow:
+        0 0 0 1px color-mix(in srgb, var(--fundamentals-purple) 35%, transparent),
+        0 1.25rem 2.5rem -1rem color-mix(in srgb, var(--fundamentals-purple) 45%, transparent);
+}
+
+.qa-slide .qa-qr-caption {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    text-align: center;
+    background: linear-gradient(120deg, var(--fundamentals-purple), var(--fundamentals-pink));
+    background-clip: text; -webkit-background-clip: text; color: transparent;
+}
+
+/* Graphic slides (`class: graphic-slide`): the "why Java will last" section
+   replaces bullet lists with logo diagrams. The title is a full-sentence
+   statement, so it gets the same smaller treatment as the other diagram
+   slides; the graphic below is centered in the remaining space. */
+.graphic-slide h1 {
+    font-size: 2.1rem !important;
+    line-height: 1.2;
+    max-width: none;
+    text-wrap: balance;
+    margin-bottom: 0.25rem;
+}
+
+.graphic-slide {
+    --graphic-card-border: color-mix(in srgb, var(--fundamentals-purple) 25%, transparent);
+    --graphic-card-bg: color-mix(in srgb, var(--fundamentals-purple) 7%, transparent);
+}
+
+/* Captions under logos stay small and muted: the logo is the message. */
+.graphic-slide .logo-tile span,
+.graphic-slide .hub-center span,
+.graphic-slide .flow-node span,
+.graphic-slide .stack-layer span,
+.graphic-slide .compare-card span {
+    font-size: 1.35rem;
+    font-weight: 700;
+    line-height: 1.3;
+    text-align: center;
+    text-wrap: balance;
+}
+
+/* Logo tile: one logo plus its name, used in rows and hub rings. */
+.logo-tile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.9rem;
+    min-width: 11rem;
+    padding: 1.4rem 1.6rem;
+    border-radius: 0.9rem;
+    border: 1px solid var(--graphic-card-border);
+    background: var(--graphic-card-bg);
+}
+
+.logo-tile svg {
+    font-size: 4rem;
+}
+
+.logo-row {
+    display: flex;
+    justify-content: center;
+    gap: 2.5rem;
+    margin-top: 3rem;
+}
+
+.logo-row-large {
+    margin-top: 5rem;
+    gap: 4rem;
+}
+
+.logo-row-large .logo-tile {
+    min-width: 15rem;
+    padding: 2.2rem 2rem;
+}
+
+.logo-row-large .logo-tile svg {
+    font-size: 6.5rem;
+}
+
+.logo-row-large .logo-tile span {
+    font-size: 1.8rem;
+}
+
+/* Embabel's logo already contains its name, so the tile shows the image
+   alone, filling the space the icon and caption take in the other tiles. */
+.logo-tile-wordmark {
+    justify-content: center;
+    padding: 0 0.4rem;
+}
+
+/* The source image is square with generous whitespace above and below the
+   mark; cropping it keeps the tile as tall as its neighbours. */
+.logo-tile-wordmark img {
+    width: 13rem;
+    height: 9.5rem;
+    object-fit: cover;
+}
+
+/* Raster logos with separate light and dark variants: show the one that
+   matches the current color scheme. */
+.only-dark { display: none; }
+html.dark .only-light { display: none; }
+html.dark .only-dark { display: block; }
+
+/* scikit-learn only ships as a monochrome mark; give it its brand orange. */
+.brand-scikit {
+    color: #f7931e;
+}
+
+/* Logo hub: one big logo with the things that orbit it in a row below. */
+.logo-hub {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2.8rem;
+    margin-top: 2.5rem;
+}
+
+.hub-center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.9rem;
+}
+
+.hub-center svg {
+    font-size: 8rem;
+}
+
+.hub-center span {
+    opacity: 0.75;
+}
+
+.hub-ring {
+    display: flex;
+    justify-content: center;
+    gap: 1.8rem;
+}
+
+/* Flow: node -> arrow -> node. The arrow is drawn in CSS so it follows the
+   deck's gradient instead of an icon's fixed color. */
+.flow {
+    display: grid;
+    grid-template-columns: 16rem 1fr 16rem;
+    align-items: center;
+    gap: 1.5rem;
+    margin: 3rem auto 0;
+    max-width: 62rem;
+}
+
+.flow:has(.flow-node-wide) {
+    grid-template-columns: 16rem 1fr 26rem;
+}
+
+.flow-node {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.9rem;
+    min-height: 11rem;
+    padding: 1.4rem;
+    border-radius: 0.9rem;
+    border: 1px solid var(--graphic-card-border);
+    background: var(--graphic-card-bg);
+}
+
+.flow-node > svg {
+    font-size: 4.5rem;
+}
+
+/* Fan-out flow (`flow flow-fan`): one source on the left talking to several
+   targets on the right. A second row with an invisible placeholder instead
+   of the source left its arrow pointing into empty space, so the source
+   spans all rows instead. It starts as tall as the first row and grows
+   down to cover the second one when that row is revealed, so every arrow
+   always starts at the source. Rows are fixed so the height can animate. */
+.flow-fan {
+    grid-template-rows: 11rem 11rem;
+    row-gap: 3rem;
+}
+
+.flow-fan .flow-fan-source {
+    grid-row: 1 / 3;
+    align-self: start;
+    height: 25rem;
+    transition: height 350ms ease;
+}
+
+.flow-fan:has(.slidev-vclick-hidden) .flow-fan-source {
+    height: 11rem;
+}
+
+.flow-arrow {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    height: 6rem;
+    /* The shaft is the element's own background, so both pseudo elements
+       stay free for the arrow heads. */
+    background: linear-gradient(90deg, var(--fundamentals-purple), var(--fundamentals-pink))
+        center / calc(100% - 1.4rem) 0.3rem no-repeat;
+}
+
+.flow-arrow::after,
+.flow-arrow-both::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    border: 0.7rem solid transparent;
+}
+
+.flow-arrow::after {
+    right: 0;
+    border-left: 1rem solid var(--fundamentals-pink);
+    border-right: none;
+}
+
+/* Two-way traffic (request and response): a second head on the left. */
+.flow-arrow-both::before {
+    left: 0;
+    border-right: 1rem solid var(--fundamentals-purple);
+    border-left: none;
+}
+
+/* Whatever rides on the arrow (a logo or a protocol label) floats above the
+   shaft instead of on a plate, so it works on light and dark backgrounds. */
+.flow-arrow > svg,
+.flow-arrow > span {
+    position: absolute;
+    bottom: calc(50% + 0.8rem);
+}
+
+.flow-arrow > span {
+    font-size: 1.2rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+}
+
+.flow-arrow > svg {
+    font-size: 3.2rem;
+}
+
+/* Logos side by side inside a node or a stack layer. */
+.stack-logos {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1.8rem;
+}
+
+.stack-logos svg {
+    font-size: 3.6rem;
+}
+
+/* Stack: a thin layer resting on a heavy one - the height is the argument. */
+.stack {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    max-width: 50rem;
+    margin: 3rem auto 0;
+}
+
+.stack-layer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+    border-radius: 0.9rem;
+    border: 1px solid var(--graphic-card-border);
+    background: var(--graphic-card-bg);
+}
+
+.stack-thin {
+    padding: 0.9rem 1.5rem;
+}
+
+.stack-thin svg {
+    font-size: 2.6rem;
+}
+
+.stack-heavy {
+    flex-direction: column;
+    min-height: 17rem;
+    padding: 2rem;
+    background: color-mix(in srgb, var(--fundamentals-purple) 16%, transparent);
+    border-color: color-mix(in srgb, var(--fundamentals-purple) 45%, transparent);
+}
+
+.stack-heavy .stack-logos svg {
+    font-size: 5rem;
+}
+
+/* Compare: the wrong approach (muted, dashed) next to the right one
+   (gradient border). The second card is revealed on click. */
+.compare {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2.5rem;
+    margin-top: 4rem;
+}
+
+.compare-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1.6rem;
+    min-height: 19rem;
+    padding: 2rem 2.2rem;
+    border-radius: 0.9rem;
+}
+
+.compare-card span {
+    font-size: 1.6rem !important;
+}
+
+.compare-bad {
+    border: 2px dashed color-mix(in srgb, currentColor 30%, transparent);
+    opacity: 0.6;
+}
+
+/* Gradient border: the translucent card tint would let the gradient layer
+   shine through, so the padding-box layer is the tint on top of the slide
+   background color. */
+.compare-good {
+    --compare-surface: #fff;
+    border: 2px solid transparent;
+    background:
+        linear-gradient(var(--graphic-card-bg), var(--graphic-card-bg)) padding-box,
+        linear-gradient(var(--compare-surface), var(--compare-surface)) padding-box,
+        linear-gradient(120deg, var(--fundamentals-purple), var(--fundamentals-pink)) border-box;
+}
+
+html.dark .compare-good {
+    --compare-surface: #121212;
+}
+
+.compare-flow {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.compare-flow svg {
+    font-size: 3.6rem;
+}
+
+.compare-flow svg:nth-child(even) {
+    font-size: 2rem;
+    opacity: 0.6;
+}
+
+.compare-icon {
+    font-size: 5rem;
+}
+
+.compare-good .compare-icon,
+.compare-good .compare-flow svg:last-child {
+    color: var(--fundamentals-purple);
+}
+
+/* Slidev only animates the opacity of a reveal, so the rise has to be
+   declared here. */
+.graphic-slide .reveal {
+    transition: opacity 350ms ease, transform 350ms ease;
+}
+
+.graphic-slide .reveal.slidev-vclick-hidden {
+    opacity: 0;
+    transform: translateY(0.75rem);
+}
+
+/* Advisor chain (Spring AI): advisors nest around the model like servlet
+   filters, which a flat flow cannot show, so it is an inline SVG. The
+   layers share one translucent fill, so each inner layer reads darker
+   without needing its own color. Colors come from the deck variables so
+   the diagram follows the light and dark scheme. */
+.advisor-chain {
+    display: block;
+    width: 100%;
+    max-width: 80rem;
+    margin: 1.5rem auto 0;
+}
+
+.advisor-chain text {
+    fill: currentColor;
+    font-size: 26px;
+    font-weight: 700;
+}
+
+.advisor-chain .advisor-caption {
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    opacity: 0.75;
+}
+
+/* "Response" has to fit inside its circle. */
+.advisor-chain .advisor-io-label {
+    font-size: 22px;
+}
+
+.advisor-chain .advisor-io-label-long {
+    font-size: 19px;
+}
+
+.advisor-layer {
+    fill: var(--graphic-card-bg);
+    stroke: var(--graphic-card-border);
+    stroke-width: 2;
+}
+
+/* The tool loop is the layer the slide is about, so it gets the accent. */
+.advisor-layer-tools {
+    stroke: var(--fundamentals-purple);
+    stroke-width: 3;
+}
+
+.advisor-model,
+.advisor-tools {
+    fill: color-mix(in srgb, var(--fundamentals-purple) 22%, transparent);
+    stroke: var(--fundamentals-purple);
+    stroke-width: 3;
+}
+
+.advisor-tools {
+    fill: color-mix(in srgb, var(--fundamentals-pink) 18%, transparent);
+    stroke: var(--fundamentals-pink);
+}
+
+.advisor-io {
+    fill: color-mix(in srgb, var(--fundamentals-pink) 10%, transparent);
+    stroke: var(--fundamentals-pink);
+    stroke-width: 3;
+}
+
+.advisor-flow,
+.advisor-loop {
+    stroke: var(--fundamentals-purple);
+    stroke-width: 3;
+    stroke-dasharray: 10 8;
+}
+
+.advisor-loop {
+    stroke: var(--fundamentals-pink);
+    stroke-dasharray: none;
+}
+
+.advisor-arrow-head {
+    fill: var(--fundamentals-pink);
+}
+
+/* The tools live in the application, not in the AI stack: a dashed frame
+   around them and the domain services they share with the REST API. */
+.advisor-domain {
+    fill: none;
+    stroke: var(--fundamentals-pink);
+    stroke-width: 2;
+    stroke-dasharray: 12 8;
+}
+
+.advisor-node {
+    fill: var(--graphic-card-bg);
+    stroke: var(--graphic-card-border);
+    stroke-width: 2;
+}
+
+.advisor-link {
+    stroke: var(--fundamentals-pink);
+    stroke-width: 3;
+}
+
+/* GOAP graph (Embabel): world states are boxes, actions are edges with a
+   cost. The slide declares `clicks: 5` and binds classes to `$clicks`
+   instead of using v-click, because an edge has to stay visible the whole
+   time and only change its state (muted -> explored -> on -> off). Each edge
+   is a muted base path plus a gradient overlay that draws itself in via
+   `pathLength="1"` and the dash offset, so the audience sees A* walk the
+   path instead of it popping in. Node fills mix the tint into the slide
+   color so the edge ends do not shine through the boxes. */
+.goap-graph {
+    display: block;
+    width: 100%;
+    max-width: 84rem;
+    margin: 1.5rem auto 0;
+}
+
+.goap-graph text {
+    fill: currentColor;
+    font-family: var(--slidev-code-font-family, monospace);
+    font-size: 21px;
+    font-weight: 700;
+}
+
+.goap-node rect {
+    fill: color-mix(in srgb, var(--fundamentals-purple) 7%, var(--diagram-surface));
+    stroke: var(--graphic-card-border);
+    stroke-width: 2;
+    transition: stroke 400ms ease, fill 400ms ease;
+}
+
+.goap-node.is-on rect {
+    fill: color-mix(in srgb, var(--fundamentals-purple) 16%, var(--diagram-surface));
+    stroke: var(--fundamentals-purple);
+    stroke-width: 3;
+}
+
+/* The goal is known up front, so it is marked before the search reaches it. */
+.goap-goal rect {
+    stroke: var(--fundamentals-pink);
+    stroke-dasharray: 10 6;
+}
+
+.goap-goal.is-on rect {
+    stroke-dasharray: none;
+    stroke: var(--fundamentals-pink);
+}
+
+.goap-base {
+    fill: none;
+    stroke: color-mix(in srgb, currentColor 30%, transparent);
+    stroke-width: 3;
+    transition: opacity 400ms ease;
+}
+
+.goap-hl {
+    fill: none;
+    stroke: url(#goap-gradient);
+    stroke-width: 6;
+    stroke-linecap: round;
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    transition: stroke-dashoffset 700ms ease, opacity 400ms ease;
+}
+
+.goap-edge > text {
+    opacity: 0.55;
+    transition: opacity 400ms ease;
+}
+
+.goap-edge.is-on .goap-hl {
+    stroke-dashoffset: 0;
+}
+
+.goap-edge.is-on > text,
+.goap-edge.is-seen > text {
+    opacity: 1;
+}
+
+/* Explored but not (yet) chosen: A* has priced the edge, the dashed overlay
+   shows it is on the frontier. */
+.goap-edge.is-seen .goap-hl {
+    stroke-dashoffset: 0;
+    stroke-dasharray: 0.03 0.02;
+    stroke-width: 3;
+    opacity: 0.7;
+}
+
+/* Dropped by the search, or invalidated when the world changed. */
+.goap-edge.is-off .goap-hl,
+.goap-edge.is-off .goap-base,
+.goap-edge.is-off > text {
+    opacity: 0.2;
+}
+
+.goap-edge.is-off .goap-cond {
+    opacity: 0.9;
+}
+
+.goap-cond {
+    fill: var(--fundamentals-pink) !important;
+    font-size: 18px !important;
+    letter-spacing: 0.04em;
+}
+
+.goap-head {
+    fill: color-mix(in srgb, currentColor 30%, transparent);
+}
+
+.goap-head-on {
+    fill: var(--fundamentals-pink);
+}
+
+.goap-tally {
+    opacity: 0;
+    transition: opacity 400ms ease;
+    fill: var(--fundamentals-purple) !important;
+    font-size: 22px !important;
+    font-weight: 800 !important;
+}
+
+.goap-tally.is-on {
+    opacity: 1;
+}
+
+.goap-legend rect {
+    fill: color-mix(in srgb, var(--fundamentals-purple) 7%, var(--diagram-surface));
+    stroke: var(--graphic-card-border);
+    stroke-width: 2;
+}
+
+.goap-legend line {
+    stroke: color-mix(in srgb, currentColor 30%, transparent);
+    stroke-width: 3;
+}
+
+.goap-legend text {
+    font-size: 18px;
+    opacity: 0.75;
+}
+
+/* Koog graphs: hand-drawn SVG in the same visual language as the GOAP graph
+   instead of Mermaid, whose auto layout crossed the back edges through the
+   boxes and could not animate. Nodes are tinted boxes, edges a muted base
+   path plus a gradient overlay that draws itself in (`pathLength="1"` and the
+   dash offset) when the slide's `$clicks` reaches the loop it belongs to.
+   The gradient and markers are referenced by attribute with per-diagram ids,
+   because Slidev keeps neighbouring slides mounted and duplicate ids would
+   resolve into a hidden slide. Library subgraphs are dashed frames, nodes I
+   write myself carry the pink outline. */
+.koog-graph {
+    display: block;
+    width: 100%;
+    max-width: 84rem;
+    margin: 4rem auto 0;
+}
+
+.koog-graph text {
+    fill: currentColor;
+    font-family: var(--slidev-code-font-family, monospace);
+    font-size: 21px;
+    font-weight: 700;
+}
+
+.kg-node rect {
+    fill: color-mix(in srgb, var(--fundamentals-purple) 12%, var(--diagram-surface));
+    stroke: var(--fundamentals-purple);
+    stroke-width: 2.5;
+}
+
+.kg-terminal rect {
+    fill: var(--diagram-surface);
+    stroke: color-mix(in srgb, currentColor 45%, transparent);
+}
+
+.kg-mine rect {
+    stroke: var(--fundamentals-pink);
+    stroke-width: 3;
+}
+
+.kg-frame rect {
+    fill: color-mix(in srgb, var(--fundamentals-purple) 4%, var(--diagram-surface));
+    stroke: var(--fundamentals-purple);
+    stroke-width: 2;
+    stroke-dasharray: 12 8;
+}
+
+.kg-frame text {
+    fill: var(--fundamentals-purple) !important;
+    font-size: 18px !important;
+    letter-spacing: 0.04em;
+}
+
+.kg-base {
+    fill: none;
+    stroke: color-mix(in srgb, currentColor 35%, transparent);
+    stroke-width: 3;
+}
+
+.kg-hl {
+    fill: none;
+    stroke-width: 6;
+    stroke-linecap: round;
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    transition: stroke-dashoffset 700ms ease;
+}
+
+.kg-edge.is-on .kg-hl {
+    stroke-dashoffset: 0;
+}
+
+.kg-edge > text {
+    font-size: 18px !important;
+    opacity: 0.7;
+    transition: opacity 400ms ease;
+}
+
+.kg-edge.is-on > text {
+    opacity: 1;
+}
+
+.kg-note {
+    fill: var(--fundamentals-pink) !important;
+    font-size: 17px !important;
+    letter-spacing: 0.04em;
+}
+
+.kg-head {
+    fill: color-mix(in srgb, currentColor 35%, transparent);
+}
+
+.kg-head-on {
+    fill: var(--fundamentals-pink);
+}
+
+.kg-legend text {
+    font-size: 18px;
+    opacity: 0.75;
+}
+
+.kg-legend .kg-frame rect,
+.kg-legend .kg-mine rect {
+    stroke-width: 2;
+}
+
+/* Pillar grid: the six things a production agent needs, introduced once on
+   the thesis slide and referenced again by the pillar tags below. The icon
+   carries the deck's gradient color so the six read as one family. */
+.pillar-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.8rem 2.2rem;
+    max-width: 62rem;
+    margin: 3rem auto 0;
+}
+
+.pillar {
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+    padding: 1.5rem 1.8rem;
+    border-radius: 0.9rem;
+    border: 1px solid var(--graphic-card-border);
+    background: var(--graphic-card-bg);
+}
+
+.pillar svg {
+    flex: none;
+    font-size: 3.4rem;
+    color: var(--fundamentals-purple);
+}
+
+.pillar span {
+    font-size: 1.7rem;
+    font-weight: 800;
+    white-space: nowrap;
+}
+
+/* Pillar tag: a small eyebrow above the title that names which of the six
+   pillars the slide proves, so the audience can map every argument back to
+   the thesis without a recap slide. */
+.pillar-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.6rem;
+    padding: 0.3rem 0.9rem;
+    border-radius: 999px;
+    border: 1px solid var(--fundamentals-purple);
+    color: var(--fundamentals-purple);
+    font-size: 1rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+/* A tag naming two pillars: the second icon doubles as the separator. */
+.pillar-tag svg:not(:first-child) {
+    margin-left: 0.6rem;
+}
+
+html.dark .pillar-tag {
+    border-color: var(--fundamentals-pink);
+    color: var(--fundamentals-pink);
+}
+
+/* Timeline: evenly spaced milestones on a gradient rail. The rail is the
+   container's background, drawn through the vertical middle of the icons. */
+.timeline {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    margin-top: 4.5rem;
+    background: linear-gradient(90deg, var(--fundamentals-purple), var(--fundamentals-pink))
+        center 2.2rem / 90% 0.3rem no-repeat;
+}
+
+.timeline-point {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+/* The icon sits on a disc in the slide color so the rail stops at its edge
+   instead of running through the logo. */
+.timeline-point svg {
+    box-sizing: content-box;
+    font-size: 3.4rem;
+    padding: 0.6rem;
+    border-radius: 50%;
+    /* 2px everywhere so the highlighted milestone does not sit lower. */
+    border: 2px solid var(--graphic-card-border);
+    background: #fff;
+}
+
+html.dark .timeline-point svg {
+    background: #121212;
+}
+
+.timeline-point strong {
+    margin-top: 0.6rem;
+    font-size: 2.2rem;
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+    background: linear-gradient(120deg, var(--fundamentals-purple), var(--fundamentals-pink));
+    background-clip: text; -webkit-background-clip: text; color: transparent;
+}
+
+.timeline-point span {
+    font-size: 1.35rem;
+    font-weight: 700;
+    text-align: center;
+    text-wrap: balance;
+    opacity: 0.8;
+}
+
+/* The milestone still being written gets the gradient ring instead of the
+   hairline, like the highlighted comparison card. */
+.timeline-next svg {
+    border-color: var(--fundamentals-pink);
+    color: var(--fundamentals-purple);
+}
+
+/* Framework sections: the flow diagrams there carry three nodes instead of
+   two (reviewer -> judge -> outcome, AIAgent -> bridge -> ChatModel), so a
+   five-column variant keeps the same node/arrow rhythm on one row. */
+.flow-5 {
+    grid-template-columns: 1fr 11rem 1fr 11rem 1fr;
+    max-width: 78rem;
+}
+
+/* Arrow labels in the framework sections are method names
+   (`loadDossier`, `accept | revise`): breaking them reads as two labels. */
+.flow-5 .flow-arrow > span {
+    white-space: nowrap;
+}
+
+/* A code slide that also carries a diagram gets both classes; the graphic
+   rule would otherwise pull the code window right up against the title. */
+.code-slide.graphic-slide h1 {
+    margin-bottom: 1.5rem;
+}
+
+/* A flow under a code window shares the slide with the snippet, so the
+   nodes shrink instead of pushing the diagram off the canvas. */
+.code-slide .flow {
+    margin-top: 2.5rem;
+}
+
+.code-slide .flow-node,
+.flow-compact .flow-node {
+    min-height: 6.5rem;
+    padding: 1rem;
+    gap: 0.6rem;
+}
+
+.code-slide .flow-node > svg,
+.flow-compact .flow-node > svg {
+    font-size: 3rem;
+}
+
+/* Type names inside a node are code, not captions. */
+.flow-node code {
+    font-size: 1.15rem;
+}
+
+/* Arrow pointing right-to-left: the judge's feedback and the planner's
+   replanning travel back against the main flow. Only the head moves; the
+   label stays readable instead of being rotated upside down. */
+.flow-arrow-back::after {
+    right: auto;
+    left: 0;
+    border-left: none;
+    border-right: 1rem solid var(--fundamentals-purple);
+}
+
+/* Return row: a lone arrow under the main flow. Same columns as the row
+   above so the arrow sits exactly under the arrow it answers, but without
+   the height of the (absent) nodes. */
+.flow-return {
+    margin-top: 0.5rem;
+}
+
+/* Loop-back connector (`flow-loop`, inside a `flow-5`): the judge's
+   feedback leaves the bottom of the judge and enters the bottom of the
+   reviewer as one U-shaped arrow. A lone back arrow in a row of its own
+   started and ended in empty space, so the arrow did not visibly connect
+   the two nodes. It spans columns 1-3 and is inset by half a node column
+   on each side (25% - 3.5rem = half of 1fr, given the 11rem arrow column
+   and the 1.5rem gaps), so both ends sit under the node centers. The U is
+   the deck gradient masked to a 0.3rem outline in `::before`; the mask
+   would also clip children, hence pseudo elements for line and head. */
+.flow:has(.flow-loop) {
+    row-gap: 0;
+}
+
+.flow-loop {
+    position: relative;
+    grid-column: 1 / 4;
+    height: 3.5rem;
+    margin-inline: calc(25% - 3.5rem);
+}
+
+/* Same loop between the last two nodes (`flow-loop-end`): the planner's
+   replan leaves the goal and re-enters the planner. Columns 3-5 have the
+   same 1fr / 11rem / 1fr rhythm as 1-3, so the inset still lands both ends
+   under the node centers. */
+.flow-loop-end {
+    grid-column: 3 / 6;
+}
+
+/* The xor mask leaks a subpixel hairline along the open top edge, which
+   read as a faint line joining the two nodes. The outline starts 1px higher
+   and that row is clipped, so the legs still touch the nodes. */
+.flow-loop::before {
+    content: '';
+    position: absolute;
+    inset: -1px 0 0;
+    clip-path: inset(1px 0 0);
+    padding: 0 0.3rem 0.3rem;
+    border-radius: 0 0 1.2rem 1.2rem;
+    background: linear-gradient(90deg, var(--fundamentals-purple), var(--fundamentals-pink));
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+}
+
+/* Head pointing up into the reviewer, centered on the 0.3rem line. */
+.flow-loop::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -0.55rem;
+    border: 0.7rem solid transparent;
+    border-top: none;
+    border-bottom: 1rem solid var(--fundamentals-purple);
+}
+
+.flow-loop > span {
+    position: absolute;
+    top: calc(100% + 0.5rem);
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 1.2rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+}
+
+/* Turn row: a short downward arrow under the last node, so a long chain
+   can continue on a second row read right-to-left. */
+.flow-turn {
+    margin-top: 1.5rem;
+}
+
+/* The arrow is the regular horizontal arrow turned by 90 degrees; its
+   label sits beside it as a sibling so the text is not rotated with it. */
+.flow-turn-cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.flow-turn-cell > span {
+    font-size: 1.2rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+}
+
+.flow-arrow-down {
+    width: 4rem;
+    height: 2.5rem;
+    transform: rotate(90deg);
+}
+
+/* Trace waterfall (`.trace`): what one review looks like in a tracing UI.
+   Each span is a bar positioned by `--start` and `--width` (percent of the
+   whole request), indented by `--depth`, so the nesting of chat client,
+   advisors, model calls and tool calls is visible at a glance. */
+.trace {
+    display: flex;
+    flex-direction: column;
+    gap: 1.1rem;
+    max-width: 76rem;
+    margin: 3.5rem auto 0;
+}
+
+.trace-span {
+    display: grid;
+    grid-template-columns: 30rem 1fr;
+    align-items: center;
+    gap: 1.2rem;
+}
+
+.trace-span > span {
+    padding-left: calc(var(--depth, 0) * 1.8rem);
+    font-family: var(--slidev-code-font-family, monospace);
+    font-size: 1.35rem;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.trace-span > i {
+    position: relative;
+    height: 2.2rem;
+}
+
+.trace-span > i::before {
+    content: '';
+    position: absolute;
+    left: var(--start, 0%);
+    width: var(--width, 100%);
+    height: 100%;
+    border-radius: 0.35rem;
+    background: linear-gradient(90deg, var(--fundamentals-purple), var(--fundamentals-pink));
+}
+
+/* Tool spans are application code, not model time: a lighter bar makes the
+   split between waiting on the model and running our own code visible. */
+.trace-tool > i::before {
+    background: color-mix(in srgb, var(--fundamentals-purple) 30%, transparent);
+    border: 1px solid var(--fundamentals-purple);
+}
+
+.trace.reveal,
+.trace-span.reveal {
+    transition: opacity 350ms ease, transform 350ms ease;
+}
+
+.trace-span.reveal.slidev-vclick-hidden {
+    opacity: 0;
+    transform: translateY(0.5rem);
+}
+
+/* The Koog strategy map reuses the pillar grid (six short labels with an
+   icon, same visual family). Its labels are longer than the pillar names;
+   at the pillar grid's width the columns overflow to the right and the
+   grid sits off center, so this variant gets a little more room. */
+.strategy-grid {
+    max-width: 72rem;
+}
+
+/* The strategy the demo actually uses gets the gradient border of the
+   highlighted comparison card so it reads as "this is what we built", the
+   others as alternatives. */
+.pillar-current {
+    border: 2px solid transparent;
+    background:
+        linear-gradient(var(--graphic-card-bg), var(--graphic-card-bg)) padding-box,
+        linear-gradient(var(--diagram-surface), var(--diagram-surface)) padding-box,
+        linear-gradient(120deg, var(--fundamentals-purple), var(--fundamentals-pink)) border-box;
+}
+
+/* Reuse rows (`.reuse`): one row per agent, one box per action it needs.
+   New actions are solid gradient boxes, reused ones are outlined, so the
+   shrinking amount of new code from row to row is the argument. Fixed
+   columns keep the same action exactly above itself in the next row. */
+.reuse {
+    display: flex;
+    flex-direction: column;
+    gap: 1.6rem;
+    max-width: 80rem;
+    margin: 4rem auto 0;
+}
+
+.reuse-row {
+    display: grid;
+    grid-template-columns: 13rem repeat(4, 1fr);
+    align-items: center;
+    gap: 1rem;
+}
+
+.reuse-agent {
+    font-size: 1.35rem;
+    font-weight: 800;
+    white-space: nowrap;
+}
+
+.reuse-row > i {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 4.5rem;
+    padding: 0 0.8rem;
+    border-radius: 0.6rem;
+    border: 2px solid var(--fundamentals-purple);
+    background: var(--graphic-card-bg);
+    font-family: var(--slidev-code-font-family, monospace);
+    font-size: 1.15rem;
+    font-style: normal;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.reuse-row > i.reuse-new {
+    border-color: transparent;
+    background: linear-gradient(120deg, var(--fundamentals-purple), var(--fundamentals-pink));
+    color: #fff;
+}
+
+/* Slide background color for Mermaid edge labels (see setup/mermaid.ts):
+   a label on a plate of the slide color interrupts the edge line under it
+   instead of being struck through by it. */
+:root {
+    --diagram-surface: #fff;
+}
+
+html.dark {
+    --diagram-surface: #121212;
+}
+
+/* Dense code slides: the snippets that carry a whole loop or a whole set of
+   edges are longer than the default 80-column window allows on one canvas,
+   so these few slides fit more columns. Kept as an explicit class to make
+   every exception visible in the slide source. */
+.code-slide.code-dense {
+    --code-window-columns: 94;
+}
+
+/* Agenda slide: the ordered list becomes a numbered index — two-digit
+   gradient numerals with a hairline rule between the entries. */
+.agenda {
+    /* A little wider than the theme's 48%: the entries are single lines and
+       still stay clear of the featured mascot. */
+    --cover-text-width: 66%;
+}
+
+.agenda ol {
+    counter-reset: agenda;
+    list-style: none;
+    padding: 0;
+    margin: 2rem 0 0;
+}
+
+.agenda ol li {
+    counter-increment: agenda;
+    display: flex;
+    align-items: baseline;
+    gap: 2.75rem;
+    padding: 0.65rem 0;
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1.3;
+    white-space: nowrap;
+    border-bottom: 1px solid color-mix(in srgb, var(--fundamentals-purple) 25%, transparent);
+}
+
+.agenda ol li:last-child {
+    border-bottom: none;
+}
+
+.agenda ol li::before {
+    content: counter(agenda, decimal-leading-zero);
+    flex: none;
+    min-width: 2.2rem;
+    font-size: 1.5rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+    background: linear-gradient(120deg, var(--fundamentals-purple), var(--fundamentals-pink));
+    background-clip: text; -webkit-background-clip: text; color: transparent;
+}

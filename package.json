@@ -1,0 +1,18 @@
+{
+  "name": "ditch-python-enterprise-koog-agents",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "build": "slidev build",
+    "dev": "slidev --open",
+    "export": "slidev export"
+  },
+  "dependencies": {
+    "@iconify-json/logos": "^1.2.14",
+    "@iconify-json/simple-icons": "^1.2.97",
+    "@slidev/cli": "^53.0.0",
+    "@slidev/theme-default": "latest",
+    "slidev-theme-kotlin": "^0.13.0",
+    "vue": "^3.5.33"
+  }
+}

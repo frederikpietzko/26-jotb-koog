@@ -1,0 +1,62 @@
+<templateSet group="demo">
+  <template name="agent" value="val agent = AIAgent(&#10;    promptExecutor = executor,&#10;    agentConfig = AIAgentConfig(&#10;        model = OpenAIModels.Chat.GPT5_6Luna,&#10;        prompt = prompt(&quot;review-prompt&quot;) {&#10;            system(Prompts.REVIEWER)&#10;        },&#10;        maxAgentIterations = 50,&#10;    ),&#10;)&#10;" description="" toReformat="false" toShortenFQNames="true">
+    <context>
+      <option name="KOTLIN" value="true" />
+    </context>
+  </template>
+  <template name="basic" value="val verdict = runBlocking {&#10;    val result = agent.run(&#10;        &quot;&quot;&quot;&#10;        Review Trip: ${facts.trip(tripId)}&#10;        with cost breakdown: ${facts.costs(tripId)}&#10;        Policies: ${facts.policies()}&#10;        answer only one word of these: ${Verdict.entries.joinToString(&quot;, &quot;)}&#10;    &quot;&quot;&quot;.trimIndent()&#10;    )&#10;    Verdict.valueOf(result)&#10;}" description="" toReformat="false" toShortenFQNames="true">
+    <context>
+      <option name="KOTLIN" value="true" />
+    </context>
+  </template>
+  <template name="toolset" value="@Component&#10;class TripToolset(&#10;    private val facts: TravelFacts,&#10;) : ToolSet {&#10;    @Tool&#10;    @LLMDescription(&quot;get information about the trip&quot;)&#10;    fun tripInfo(@LLMDescription(&quot;the trip id&quot;) tripId: Long) = facts.trip(tripId)&#10;&#10;    @Tool&#10;    @LLMDescription(&quot;get corporate travel policies&quot;)&#10;    fun travelPolicies() = facts.policies()&#10;&#10;    @Tool&#10;    @LLMDescription(&quot;get trip cost breakdown&quot;)&#10;    fun costBreakdown(@LLMDescription(&quot;the trip id&quot;) tripId: Long) = facts.costs(tripId)&#10;}&#10;" description="" toReformat="false" toShortenFQNames="true">
+    <context>
+      <option name="KOTLIN" value="true" />
+    </context>
+  </template>
+  <template name="nodes" value="val review by nodeLLMRequest(&quot;review&quot;)&#10;val performToolCalls by nodeExecuteTools(&quot;perform-tool-calls&quot;)&#10;val sendToolResults by nodeLLMSendToolResults(&quot;send-tool-results&quot;)&#10;val outcome by nodeLLMRequestStructured&lt;ReviewOutcome&gt;(&#10;    name = &quot;structured-result&quot;,&#10;    fixingParser = StructureFixingParser(&#10;        model = OpenAIModels.Chat.GPT5Mini,&#10;        retries = 3&#10;    )&#10;)&#10;" description="" toReformat="false" toShortenFQNames="true">
+    <context>
+      <option name="KOTLIN" value="true" />
+    </context>
+  </template>
+  <template name="edges" value="nodeStart then review&#10;edge(review forwardTo performToolCalls onToolCalls { true })&#10;edge(performToolCalls forwardTo sendToolResults)&#10;edge(sendToolResults forwardTo performToolCalls onToolCalls { true })&#10;edge(sendToolResults forwardTo outcome onTextMessage { true } transformed { Prompts.STRUCTURED })&#10;edge(review forwardTo outcome onTextMessage { true } transformed { Prompts.STRUCTURED })&#10;edge(outcome forwardTo nodeFinish transformed { it.getOrThrow().data })&#10;" description="" toReformat="false" toShortenFQNames="true">
+    <context>
+      <option name="KOTLIN" value="true" />
+    </context>
+  </template>
+  <template name="basicSubgraph" value="val review by subgraphWithTask&lt;String, ReviewOutcome&gt; { it }&#10;nodeStart then review then nodeFinish&#10;" description="" toReformat="false" toShortenFQNames="true">
+    <context>
+      <option name="KOTLIN" value="true" />
+    </context>
+  </template>
+  <template name="judge" value="val judge by subgraph&lt;ReviewOutcome, CriticResult&lt;ReviewOutcome&gt;&gt;(freshHistory = true) {&#10;    val verify by subgraphWithVerification&lt;ReviewOutcome&gt;(tools = emptyList()) { outcomeDraft -&gt;&#10;        llm.writeSession {&#10;            clearHistory()&#10;            appendPrompt {&#10;                system(Prompts.JUDGE)&#10;            }&#10;        }&#10;        Prompts.judge(&#10;            trip = facts.trip(tripId),&#10;            policies = facts.policies(),&#10;            costs = facts.costs(tripId),&#10;            draft = outcomeDraft&#10;        )&#10;    }&#10;    nodeStart then verify then nodeFinish&#10;}&#10;" description="" toReformat="false" toShortenFQNames="true">
+    <context>
+      <option name="KOTLIN" value="true" />
+    </context>
+  </template>
+  <template name="refine" value="val refine by subgraph&lt;CriticResult&lt;ReviewOutcome&gt;, ReviewOutcome&gt; {&#10;    val prompt by node&lt;CriticResult&lt;ReviewOutcome&gt;, String&gt; { critic -&gt;&#10;        Prompts.revise(&#10;            tripId = tripId,&#10;            draft = critic.input,&#10;            feedback = critic.feedback&#10;        )&#10;    }&#10;    val fixit by nodeLLMRequestStructured&lt;ReviewOutcome&gt;()&#10;&#10;    nodeStart then prompt then fixit&#10;    edge(fixit forwardTo nodeFinish transformed { it.getOrThrow().data })&#10;}&#10;" description="" toReformat="false" toShortenFQNames="true">
+    <context>
+      <option name="KOTLIN" value="true" />
+    </context>
+  </template>
+  <template name="edgesfinal" value="nodeStart then review then judge&#10;edge(judge forwardTo refine onCondition { !it.successful })&#10;edge(refine forwardTo judge)&#10;edge(judge forwardTo nodeFinish onCondition { it.successful } transformed { it.input })&#10;" description="" toReformat="false" toShortenFQNames="true">
+    <context>
+      <option name="KOTLIN" value="true" />
+    </context>
+  </template>
+  <template name="tripstatusupdate" value="@Tool&#10;@LLMDescription(&quot;update trip request status&quot;)&#10;fun updateTripStatus(&#10;    @LLMDescription(&quot;the trip id&quot;)&#10;    tripId: Long,&#10;    @LLMDescription(&quot;the current trip status&quot;)&#10;    oldStatus: TripStatus,&#10;    @LLMDescription(&quot;the new trip status that should override the old one&quot;)&#10;    newStatus: TripStatus,&#10;) {&#10;    val trip = tripRepository.findByIdOrNull(tripId)!!&#10;    require(trip.status == oldStatus) { &quot;Trip status does not match the old status&quot; }&#10;    trip.status = newStatus&#10;    tripRepository.save(trip)&#10;}&#10;&#10;@Tool&#10;@LLMDescription(&quot;rollabck trip request&quot;)&#10;fun undoTripStatus(&#10;    @LLMDescription(&quot;the trip id&quot;)&#10;    tripId: Long,&#10;    @LLMDescription(&quot;the old trip status before updateing&quot;)&#10;    oldStatus: TripStatus,&#10;    @LLMDescription(&quot;the current trip status that should be overriden by the old one&quot;)&#10;    newStatus: TripStatus,&#10;) {&#10;    val trip = tripRepository.findByIdOrNull(tripId)!!&#10;    require(trip.status == newStatus) { &quot;Trip status does not match the new status&quot; }&#10;    trip.status = oldStatus&#10;    tripRepository.save(trip)&#10;}&#10;" description="" toReformat="false" toShortenFQNames="true">
+    <context>
+      <option name="KOTLIN" value="true" />
+    </context>
+  </template>
+  <template name="langfuse" value="if (langfuse.enabled) install(OpenTelemetry) {&#10;    setServiceInfo(&quot;koog-travel-policy-demo&quot;, &quot;0.0.1&quot;)&#10;    setVerbose(langfuse.verbose)&#10;    setShutdownOnAgentClose(true)&#10;    addLangfuseExporter(langfuse.host, langfuse.publicKey, langfuse.secretKey)&#10;}&#10;" description="" toReformat="false" toShortenFQNames="true">
+    <context>
+      <option name="KOTLIN" value="true" />
+    </context>
+  </template>
+  <template name="peristance" value="install(Persistence) {&#10;    storage = InMemoryPersistenceStorageProvider()&#10;    enableAutomaticPersistence = true&#10;    rollbackToolRegistry = RollbackToolRegistry {&#10;        registerRollback(&#10;            tool = tripToolset::updateTripStatus.asTool(),&#10;            rollbackTool = tripToolset::undoTripStatus.asTool()&#10;        )&#10;    }&#10;}&#10;" description="" toReformat="false" toShortenFQNames="true">
+    <context>
+      <option name="KOTLIN" value="true" />
+    </context>
+  </template>
+</templateSet>
